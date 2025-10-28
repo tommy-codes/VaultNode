@@ -1,4 +1,4 @@
-export const CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000';
+export const CONTRACT_ADDRESS = '0x4708F83cC1D422c1dEA12C7D7E2d6f72b9eccC22';
 export const TOKEN_DECIMALS = 6;
 
 export const CONTRACT_ABI = [
@@ -60,6 +60,17 @@ export const CONTRACT_ABI = [
       }
     ],
     "name": "ConfidentialUSDTStakeLocked",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "ConfidentialUSDTTestTokensAlreadyClaimed",
     "type": "error"
   },
   {
@@ -281,6 +292,25 @@ export const CONTRACT_ABI = [
         "type": "bytes32"
       }
     ],
+    "name": "TestTokensClaimed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "euint64",
+        "name": "amount",
+        "type": "bytes32"
+      }
+    ],
     "name": "TokensMinted",
     "type": "event"
   },
@@ -329,6 +359,19 @@ export const CONTRACT_ABI = [
     "type": "event"
   },
   {
+    "inputs": [],
+    "name": "TEST_FAUCET_AMOUNT",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -345,6 +388,19 @@ export const CONTRACT_ABI = [
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "claimTestTokens",
+    "outputs": [
+      {
+        "internalType": "euint64",
+        "name": "mintedAmount",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -893,6 +949,25 @@ export const CONTRACT_ABI = [
         "internalType": "string",
         "name": "",
         "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "testTokensClaimed",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",

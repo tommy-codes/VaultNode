@@ -158,6 +158,12 @@ export function TokenApp() {
       if (!Number.isFinite(durationSeconds) || durationSeconds <= 0) {
         throw new Error('Lock duration must be a positive number of seconds');
       }
+      if (!Number.isInteger(durationSeconds)) {
+        throw new Error('Lock duration must be a whole number of seconds');
+      }
+      if (durationSeconds > Number.MAX_SAFE_INTEGER) {
+        throw new Error('Lock duration exceeds the supported range');
+      }
 
       const parsedAmount = parseUnits(amount, TOKEN_DECIMALS);
       if (parsedAmount <= 0n) {
@@ -174,12 +180,26 @@ export function TokenApp() {
 
       setStaking(true);
 
+      const contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+      const currentTimestamp = BigInt(Math.floor(Date.now() / 1000));
+      const lockDuration = BigInt(durationSeconds);
+      const operatorBuffer = 3600n;
+      const maxOperatorUntil = (1n << 48n) - 1n;
+      const operatorUntil = currentTimestamp + lockDuration + operatorBuffer;
+
+      if (operatorUntil > maxOperatorUntil) {
+        throw new Error('Operator authorization duration exceeds the protocol limit');
+      }
+
+      const operatorTx = await contract.setOperator(CONTRACT_ADDRESS, operatorUntil);
+      await operatorTx.wait();
+
       const encryptedBuffer = await instance
         .createEncryptedInput(CONTRACT_ADDRESS, address)
         .add64(parsedAmount)
         .encrypt();
 
-      const contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
       const tx = await contract.stake(
         encryptedBuffer.handles[0],
         encryptedBuffer.inputProof,
